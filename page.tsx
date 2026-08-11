@@ -1,30 +1,27 @@
 import PublicNav from '@/components/PublicNav';
 import PublicFooter from '@/components/PublicFooter';
 import Divider from '@/components/Divider';
-import { getSettings, getFaculty } from '@/lib/data';
+import { getSettings, getGallery } from '@/lib/data';
 
 export const revalidate = 0;
 
-export default async function FacultyPage() {
+export default async function GalleryPage() {
   const s = await getSettings();
-  const faculty = await getFaculty();
+  const gallery = await getGallery();
 
   return (
     <>
       <PublicNav settings={s} />
       <section>
         <div className="container">
-          <div className="section-head"><h3>اساتذہ کرام</h3></div>
+          <div className="section-head"><h3>گیلری</h3></div>
           <Divider />
-          <div className="cards-grid">
-            {faculty.length ? faculty.map((f: any) => (
-              <div className="card" key={f.id}>
-                <div className="ic">👳</div>
-                <h4>{f.name}</h4>
-                <p><b>{f.designation}</b></p>
-                <p>{f.qualification}</p>
+          <div className="gallery-grid">
+            {gallery.length ? gallery.map((g: any) => (
+              <div className="g-img" key={g.id}>
+                {g.url ? <img src={g.url} alt={g.title || ''} /> : '🖼️'}
               </div>
-            )) : <div className="empty">اساتذہ کی تفصیلات جلد شامل کی جائیں گی</div>}
+            )) : <div className="empty" style={{ gridColumn: '1/-1' }}>ابھی تک کوئی تصویر شامل نہیں کی گئی</div>}
           </div>
         </div>
       </section>
