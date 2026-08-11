@@ -1,30 +1,29 @@
 import PublicNav from '@/components/PublicNav';
 import PublicFooter from '@/components/PublicFooter';
 import Divider from '@/components/Divider';
-import { getSettings, getNotices } from '@/lib/data';
+import { getSettings } from '@/lib/data';
+import ContactForm from './ContactForm';
 
 export const revalidate = 0;
 
-export default async function NoticesPage() {
+export default async function ContactPage() {
   const s = await getSettings();
-  const notices = await getNotices();
 
   return (
     <>
       <PublicNav settings={s} />
       <section>
         <div className="container">
-          <div className="section-head"><h3>تمام اعلانات</h3></div>
+          <div className="section-head"><h3>ہم سے رابطہ کریں</h3></div>
           <Divider />
-          {notices.length ? notices.map((n: any) => (
-            <div className={`notice-item ${n.important ? 'important' : ''}`} key={n.id}>
-              <div>
-                <b>{n.title}</b>
-                <p style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 4 }}>{n.description}</p>
-              </div>
-              <div className="date">{n.notice_date}</div>
+          <div className="contact-grid">
+            <div className="contact-info">
+              <p>📍 {s.address}</p>
+              <p className="en">📞 {s.phone}</p>
+              <p className="en">✉️ {s.email}</p>
             </div>
-          )) : <div className="empty">کوئی اعلان موجود نہیں</div>}
+            <ContactForm />
+          </div>
         </div>
       </section>
       <PublicFooter settings={s} />
