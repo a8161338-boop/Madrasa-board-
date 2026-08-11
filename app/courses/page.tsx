@@ -1,5 +1,5 @@
 import { getCourses } from '@/lib/data';
-import { addCourse, updateCourse, deleteCourse } from './actions';
+
 
 export const revalidate = 0;
 
@@ -7,7 +7,7 @@ export default async function AdminCoursesPage({ searchParams }: { searchParams:
   const courses = await getCourses();
   const editing = searchParams.edit ? courses.find((c: any) => c.id === searchParams.edit) : null;
 
-  return (
+  return 
     <>
       <h3>Courses</h3>
       <form className="admin-form" action={editing ? updateCourse : addCourse}>
