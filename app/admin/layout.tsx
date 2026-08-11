@@ -1,4 +1,3 @@
-import { logout } from './login/actions';
 
 const TABS = [
   { href: '/admin', label: 'Dashboard' },
