@@ -1,21 +1,35 @@
-import './globals.css';
+import { logout } from './login/actions';
 
-export const metadata = {
-  title: 'معہد الرشد | مرکز تحفیظ القرآن و الدعوۃ و التعلیم',
-  description: 'معہد الرشد کی سرکاری ویب سائٹ',
-};
+const TABS = [
+  { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/settings', label: 'Site Settings' },
+  { href: '/admin/courses', label: 'Courses' },
+  { href: '/admin/notices', label: 'Notices' },
+  { href: '/admin/faculty', label: 'Faculty' },
+  { href: '/admin/gallery', label: 'Gallery' },
+  { href: '/admin/messages', label: 'Messages' },
+];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ur" dir="rtl">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>{children}</body>
-    </html>
+    <div className="admin-shell">
+      <div className="admin-topbar">
+        <div className="t">Maahad-ul-Rashd — Admin Panel</div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <a href="/" className="en">View site</a>
+          <form action={logout}>
+            <button type="submit">Logout</button>
+          </form>
+        </div>
+      </div>
+      <div className="admin-body">
+        <div className="admin-tabs">
+          {TABS.map((t) => (
+            <a key={t.href} href={t.href}>{t.label}</a>
+          ))}
+        </div>
+        <div className="admin-panel">{children}</div>
+      </div>
+    </div>
   );
 }
