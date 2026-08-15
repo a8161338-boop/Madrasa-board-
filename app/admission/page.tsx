@@ -14,6 +14,7 @@ export default function AdmissionPage() {
     e.preventDefault();
     setLoading(true);
 
+    // فارم کی ویلیوز حاصل کرنا
     const full_name = (document.getElementById('full_name') as HTMLInputElement).value;
     const father_name = (document.getElementById('father_name') as HTMLInputElement).value;
     const date_of_birth = (document.getElementById('date_of_birth') as HTMLInputElement).value;
@@ -22,21 +23,15 @@ export default function AdmissionPage() {
     const phone_number = (document.getElementById('phone_number') as HTMLInputElement).value;
     const address = (document.getElementById('admission_address') as HTMLTextAreaElement).value;
     const course_enrolled = (document.getElementById('course_enrolled') as HTMLInputElement).value;
-    
-    // گارڈین کی معلومات
     const guardian_name = (document.getElementById('guardian_name') as HTMLInputElement).value;
     const guardian_relation = (document.getElementById('guardian_relation') as HTMLInputElement).value;
     const guardian_phone = (document.getElementById('guardian_phone') as HTMLInputElement).value;
-    
-    // فیس کی تفصیلات
     const total_fee = (document.getElementById('total_fee') as HTMLInputElement).value;
     const paid_fee = (document.getElementById('paid_fee') as HTMLInputElement).value;
-    
-    // ہاسٹل اور ٹرانسپورٹ
     const hostel_required = (document.getElementById('hostel_required') as HTMLSelectElement).value;
     const transport_route = (document.getElementById('transport_route') as HTMLInputElement).value;
 
-    // ایک سے زیادہ فائلیں (Multiple Files) اپ لوڈ کرنے کا لوپ
+    // ایک سے زیادہ فائلیں اپ لوڈ کرنے کا منطقی عمل
     const aadharInput = document.getElementById('aadhar_card') as HTMLInputElement;
     let uploadedFileNames: string[] = [];
 
@@ -46,7 +41,7 @@ export default function AdmissionPage() {
         const fileName = `${Date.now()}_${file.name}`;
         
         const { error: uploadError } = await supabase.storage
-          .from('documents')
+          .from('documents') // یقینی بنائیں کہ آپ کا بکٹ نام 'documents' ہے
           .upload(fileName, file);
 
         if (uploadError) {
@@ -58,37 +53,56 @@ export default function AdmissionPage() {
       }
     }
 
+    // ڈیٹا بیس میں داخلہ
     const { error } = await supabase
       .from('admissions')
       .insert([
         {
-          full_name,
-          father_name,
-          date_of_birth,
-          gender,
-          email,
-          phone_number,
-          address,
-          course_enrolled,
-          guardian_name,
-          guardian_relation,
-          guardian_phone,
-          total_fee,
-          paid_fee,
-          hostel_required,
+          full_name, father_name, date_of_birth, gender, email, phone_number,
+          address, course_enrolled, guardian_name, guardian_relation, 
+          guardian_phone, total_fee, paid_fee, hostel_required, 
           transport_route,
-          aadhar_card: uploadedFileNames.join(', ') // تمام منتخب کردہ فائیلوں کے نام کما کے ساتھ محفوظ ہوں گے
+          aadhar_card: uploadedFileNames.join(', ') // تمام فائلیں کما کے ساتھ سیو ہوں گی
         }
       ]);
 
     if (error) {
       alert('ڈیٹا محفوظ کرنے میں خرابی: ' + error.message);
-      setLoading(false);
     } else {
       alert('فارم کامیابی کے ساتھ جمع ہو گیا ہے!');
-      setLoading(false);
     }
+    setLoading(false);
   };
 
-  // باقی فارم کا JSX ڈیزائن یہاں موجود ہوگا
-                            }
+  return (
+    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+      <h1>داخلہ فارم</h1>
+      <form onSubmit={handleSubmit}>
+        <input id="full_name" placeholder="طالب علم کا نام" required /><br />
+        <input id="father_name" placeholder="والد کا نام" /><br />
+        <input id="date_of_birth" type="date" /><br />
+        <select id="gender"><option value="Male">میل</option><option value="Female">فی میل</option></select><br />
+        <input id="email" type="email" placeholder="ای میل" /><br />
+        <input id="phone_number" placeholder="فون نمبر" /><br />
+        <textarea id="admission_address" placeholder="ایڈریس"></textarea><br />
+        <input id="course_enrolled" placeholder="کورس" /><br />
+        <input id="guardian_name" placeholder="سرپرست کا نام" /><br />
+        <input id="guardian_relation" placeholder="سرپرست کا رشتہ" /><br />
+        <input id="guardian_phone" placeholder="سرپرست کا فون" /><br />
+        <input id="total_fee" placeholder="کل فیس" /><br />
+        <input id="paid_fee" placeholder="ادا شدہ فیس" /><br />
+        <select id="hostel_required"><option value="No">ہاسٹل نہیں</option><option value="Yes">ہاسٹل چاہیے</option></select><br />
+        <input id="transport_route" placeholder="ٹرانسپورٹ روٹ" /><br />
+        
+        {/* یہاں دیکھیں: multiple کا مطلب ایک ساتھ کئی فائلیں */}
+        <label>دستاویزات منتخب کریں:</label>
+        <input type="file" id="aadhar_card" multiple /> 
+        <br /><br />
+        
+        <button type="submit" disabled={loading}>
+          {loading ? 'اپ لوڈ ہو رہا ہے...' : 'جمع کریں'}
+        </button>
+      </form>
+    </div>
+  );
+        }
